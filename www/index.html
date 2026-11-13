@@ -1,0 +1,95 @@
+
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My JARVIS</title>
+<style>
+body {
+    background: #071525;
+    color: cyan;
+    text-align: center;
+    font-family: Arial;
+    padding: 40px 15px;
+}
+h1 {
+    font-size: 42px;
+}
+button {
+    background: cyan;
+    color: black;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 18px;
+    margin: 10px;
+}
+#output {
+    color: white;
+    margin-top: 25px;
+    font-size: 20px;
+}
+</style>
+</head>
+<body>
+
+<h1>JARVIS</h1>
+<p>Your Personal AI Assistant</p>
+
+<button onclick="listen()">🎤 Speak to JARVIS</button>
+
+<div id="output">मैं तुम्हारी बात सुनने के लिए तैयार हूँ।</div>
+
+<script>
+function listen() {
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        document.getElementById("output").innerText =
+        "Voice recognition इस browser में उपलब्ध नहीं है।";
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "hi-IN";
+    recognition.start();
+
+    
+recognition.onresult = function(event) {
+    let text = event.results[0][0].transcript;
+
+    document.getElementById("output").innerText =
+        "तुमने कहा: " + text;
+
+    
+const utterance = new SpeechSynthesisUtterance(text);
+utterance.lang = "hi-IN";
+utterance.rate = 0.92;
+utterance.pitch = 0.95;
+utterance.volume = 1;
+
+const voices = window.speechSynthesis.getVoices();
+const hindiVoice = voices.find(v => v.lang.startsWith("hi"));
+
+if (hindiVoice) {
+    utterance.voice = hindiVoice;
+}
+
+window.speechSynthesis.cancel();
+window.speechSynthesis.speak(utterance);
+
+};
+
+    recognition.onerror = function() {
+        document.getElementById("output").innerText =
+        "माइक्रोफोन की अनुमति या इंटरनेट चेक करो।";
+    };
+}
+</script>
+
+</body>
+</html>
